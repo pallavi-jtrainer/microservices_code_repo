@@ -17,7 +17,7 @@ import lombok.ToString;
 public class Customer extends MappedClass{
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "customer_id")
 	private Long customerId;
 	
