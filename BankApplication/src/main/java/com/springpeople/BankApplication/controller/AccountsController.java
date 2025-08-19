@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -86,6 +87,24 @@ public class AccountsController {
 //		return ResponseEntity.status(HttpStatus.OK).body(customerDto);
 //	}
 	
+	 @Operation(
+	            summary = "Fetch Account Details REST API",
+	            description = "REST API to fetch Customer &  Account details based on a mobile number"
+	    )
+	    @ApiResponses({
+	            @ApiResponse(
+	                    responseCode = "200",
+	                    description = "HTTP Status OK"
+	            ),
+	            @ApiResponse(
+	                    responseCode = "500",
+	                    description = "HTTP Status Internal Server Error",
+	                    content = @Content(
+	                            schema = @Schema(implementation = ErrorResponseDto.class)
+	                    )
+	            )
+	    }
+	    )
 	@GetMapping("/fetch")	
 	public ResponseEntity<CustomerDto> retrieveAccountDetails(@RequestParam 
 			@Pattern(regexp = "(^$|[0-9]{10})", message="Mobile number must be 10 digits") String mobile) {
@@ -93,12 +112,93 @@ public class AccountsController {
 		return ResponseEntity.status(HttpStatus.OK).body(customerDto);
 	}
 	
+	 @Operation(
+	            summary = "Update Account Details REST API",
+	            description = "REST API to Account details based on mobile number"
+	    )
+	    @ApiResponses({
+	            @ApiResponse(
+	                    responseCode = "200",
+	                    description = "HTTP Status OK"
+	            ),
+	            @ApiResponse(
+	                    responseCode = "417",
+	                    description = "Expectation Failed"
+	            ),
+	            @ApiResponse(
+	                    responseCode = "500",
+	                    description = "HTTP Status Internal Server Error",
+	                    content = @Content(
+	                            schema = @Schema(implementation = ErrorResponseDto.class)
+	                    )
+	            )
+	    }
+	    )
 	@PatchMapping("/set/{type}/{mobile}")
 	public ResponseEntity<String> updateAccount(@PathVariable String type, @PathVariable String mobile) {
 		String str = service.updateAccountDetails(type, mobile);
 		return ResponseEntity.status(HttpStatus.OK).body(str);
 	}
 	
+	 
+	 @Operation(
+	            summary = "Update Account Details REST API",
+	            description = "REST API to update Customer &  Account details based on a account number"
+	    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "417",
+                    description = "Expectation Failed"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    }
+    )
+    @PutMapping("/update")
+    public ResponseEntity<ResponseDto> updateAccountDetails(@Valid @RequestBody CustomerDto customerDto) {
+        boolean isUpdated = service.updateAccount(customerDto);
+        if(isUpdated) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDto(AccountsConstants.STATUS_200, AccountsConstants.MESSAGE_200));
+        }else{
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponseDto(AccountsConstants.STATUS_417, AccountsConstants.MESSAGE_417));
+        }
+    }
+	 
+	@Operation(
+	            summary = "Delete Account & Customer Details REST API",
+	            description = "REST API to delete Customer &  Account details based on a mobile number"
+	    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "417",
+                    description = "Expectation Failed"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    }
+    )
 	@DeleteMapping("/delete/{mobile}")
 	public ResponseEntity<ResponseDto> deleteAccount(@PathVariable String mobile) {
 		boolean isDeleted = service.deleteAccount(mobile);
