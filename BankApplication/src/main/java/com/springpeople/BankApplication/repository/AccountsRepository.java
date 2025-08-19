@@ -1,5 +1,6 @@
 package com.springpeople.BankApplication.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,6 +16,8 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface AccountsRepository extends JpaRepository<Accounts, Long>{
 	Optional<Accounts> findByCustomerId(Long id);
+	
+	List<Accounts> findAllByCustomerId(Long id);
 	
 	@Modifying
 	@Transactional
