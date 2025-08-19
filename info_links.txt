@@ -3,3 +3,6 @@ https://www.youtube.com/watch?v=If1Lw4pLLEo
 
 GitHub Repo link
 https://github.com/pallavi-jtrainer/microservices_code_repo
+
+Swagger link
+http://localhost:8092/swagger-ui/index.html
