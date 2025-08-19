@@ -40,4 +40,6 @@ public class CardDto {
 	
 	@PositiveOrZero(message = "Amount available should be equal to or greater than zero")
 	private int amountAvailable;
+	
+	private CustomerDto customerDetails;
 }

@@ -4,10 +4,13 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.springpeople.Cards.constants.CardConstants;
 import com.springpeople.Cards.dto.CardDto;
+import com.springpeople.Cards.dto.CustomerDto;
 import com.springpeople.Cards.entity.Card;
 import com.springpeople.Cards.exception.CardAlreadyExistsException;
 import com.springpeople.Cards.exception.ResourceNotFoundException;
@@ -19,6 +22,12 @@ public class CardService {
 
 	@Autowired
 	private CardRepository cardRepository;
+	
+//	@Autowired
+//	private RestTemplate restTemplate;
+	
+	@Autowired
+	private APIClient apiClient;
 	
 	public void createCard(String mobileNumber) {
 		 Optional<Card> optionalCards= cardRepository.findByMobileNumber(mobileNumber);
@@ -40,12 +49,30 @@ public class CardService {
         return newCard;
     }
 	
-    public CardDto fetchCard(String mobileNumber) {
-        Card card = cardRepository.findByMobileNumber(mobileNumber).orElseThrow(
-                () -> new ResourceNotFoundException("Card", "mobileNumber", mobileNumber)
+//    public CardDto fetchCard(String mobileNumber) {
+//        Card card = cardRepository.findByMobileNumber(mobileNumber).orElseThrow(
+//                () -> new ResourceNotFoundException("Card", "mobileNumber", mobileNumber)
+//        );
+//        return CardMapper.mapToCardDto(card, new CardDto());
+//    }
+	
+	public CardDto fetchCardDetails(String mobileNumber) {
+//		ResponseEntity<CustomerDto> responseEntity = restTemplate
+//				.getForEntity("http://localhost:8092/api/fetch?mobile=" + mobileNumber, CustomerDto.class);
+//		CustomerDto customerDto = responseEntity.getBody();
+		
+		CustomerDto customerDto = apiClient.getCustomerDetails(mobileNumber);
+		
+		Card card = cardRepository.findByMobileNumber(mobileNumber).orElseThrow(
+              () -> new ResourceNotFoundException("Card", "mobileNumber", mobileNumber)
         );
-        return CardMapper.mapToCardDto(card, new CardDto());
-    }
+		
+		CardDto cardDto = new CardDto();
+		CardMapper.mapToCardDto(card, cardDto);
+		cardDto.setCustomerDetails(customerDto);
+		
+		return cardDto;
+	}
 
     
     public boolean updateCard(CardDto cardDto) {

@@ -20,7 +20,7 @@ import lombok.ToString;
 public class Card extends MappedClass {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long cardId;
 	
 	private String mobileNumber;

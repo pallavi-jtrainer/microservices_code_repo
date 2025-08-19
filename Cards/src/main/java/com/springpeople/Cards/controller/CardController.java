@@ -37,7 +37,7 @@ import lombok.AllArgsConstructor;
         description = "CRUD REST APIs to CREATE, UPDATE, FETCH AND DELETE card details"
 )
 @RestController
-@RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(path = "/api/v1", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Validated
 public class CardController {
 	
@@ -46,7 +46,7 @@ public class CardController {
 	 
 	@Operation(
 	            summary = "Create Card REST API",
-	            description = "REST API to create new Card inside EazyBank"
+	            description = "REST API to create new Card"
 	    )
 	@ApiResponses({
 	            @ApiResponse(
@@ -93,8 +93,9 @@ public class CardController {
 	    public ResponseEntity<CardDto> fetchCardDetails(@RequestParam
 	                                                               @Pattern(regexp="(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
 	                                                               String mobileNumber) {
-	        CardDto cardsDto = service.fetchCard(mobileNumber);
-	        return ResponseEntity.status(HttpStatus.OK).body(cardsDto);
+	       // CardDto cardsDto = service.fetchCard(mobileNumber);
+	    	CardDto cardDto = service.fetchCardDetails(mobileNumber);
+	        return ResponseEntity.status(HttpStatus.OK).body(cardDto);
 	    }
 
 	    @Operation(
