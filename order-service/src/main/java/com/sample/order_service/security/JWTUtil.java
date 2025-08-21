@@ -15,7 +15,7 @@ public class JWTUtil {
 	
 	private final Key key;
 	
-	public JWTUtil(@Value("${JWT_Secret:my_secret_key}") String secret) {
+	public JWTUtil(@Value("${JWT_Secret:eyJhbGciOiJIUzI1NiJ9.ew0KICAic3ViIjogIjEyMzQ1Njc4OTAiLA0KICAibmFtZSI6ICJBbmlzaCBOYXRoIiwNCiAgImlhdCI6IDE1MTYyMzkwMjINCn0.Xe8Oy0Ksl84WAEs20K_Sn_GQboI8Bsg53yFTd3IkfuA}") String secret) {
 		this.key = Keys.hmacShaKeyFor(secret.getBytes());
 	}
 	
