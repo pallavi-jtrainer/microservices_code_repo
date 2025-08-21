@@ -1,0 +1,60 @@
+services:
+  mysql:
+    image: mysql:latest
+    container_name: my_mysql_db
+    ports:
+      - "33306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Pass1234
+      MYSQL_DATABASE: udemydb
+      MYSQL_USER: docker_user
+      MYSQL_PASSWORD: Pass1234
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pPass1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  employee-service:
+    build: ./employee-service
+    container_name: employee-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/udemydb
+      SPRING_DATASOURCE_USERNAME: docker_user
+      SPRING_DATASOURCE_PASSWORD: Pass1234
+    ports:
+      - "8081:8081"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  department-service:
+    build: ./department-service
+    container_name: department-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/udemydb
+      SPRING_DATASOURCE_USERNAME: docker_user
+      SPRING_DATASOURCE_PASSWORD: Pass1234
+    ports:
+      - "8083:8083"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      employee-service:
+        condition: service_started
+
+  gateway-service:
+    build: ./gateway-service
+    container_name: gateway-service
+    ports:
+      - "9999:9999"
+    depends_on:
+      employee-service:
+        condition: service_started
+      department-service:
+        condition: service_started
+
+volumes:
+  mysql_data:
