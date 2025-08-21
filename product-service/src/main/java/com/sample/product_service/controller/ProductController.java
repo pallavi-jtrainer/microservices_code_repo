@@ -1,0 +1,30 @@
+package com.sample.product_service.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.sample.product_service.dto.ProductDto;
+import com.sample.product_service.service.IProductService;
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+
+	@Autowired
+	private IProductService service;
+	
+	@PostMapping
+	public ProductDto createProduct(@RequestBody ProductDto product) {
+		return service.createProduct(product);
+	}
+	
+	@GetMapping("/{id}")
+	public ProductDto getProductDetails(@PathVariable long id) {
+		return service.getProductDetails(id);
+	}
+ }
